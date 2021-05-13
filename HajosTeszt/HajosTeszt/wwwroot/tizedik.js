@@ -5,7 +5,7 @@ var numberOfQuestions;
 var nextQuestion = 1;
 var timerHandler;
 
-function init() {
+document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < questionsInHotList; i++) {
         hotList[i] = {
             question: {},
@@ -23,7 +23,7 @@ function init() {
 
     document.getElementById("előre_gomb").addEventListener("click", előre);
     document.getElementById("vissza_gomb").addEventListener("click", hátra);
-}
+});
 
 function kérdésBetöltés(questionNumber, destination) {
     fetch(`/questions/${questionNumber}`)
@@ -68,7 +68,7 @@ function kérdésMegjelenítés() {
     document.getElementById("válaszok").style.pointerEvents = "auto";
 }
 
-window.onload = init;
+//window.onload = init;
 
 function előre() {
     clearTimeout(timerHandler);
