@@ -13,16 +13,37 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    for (let i = 0; i < questionsInHotList; i++) {
-        kérdésBetöltés(nextQuestion, i);
-        nextQuestion++;
-    }
+    //kérdések száma
     fetch("questions/count")
         .then(result => result.text())
         .then(n => { numberOfQuestions = parseInt(n) })
 
+    //előre-hátra gombok
     document.getElementById("előre_gomb").addEventListener("click", előre);
     document.getElementById("vissza_gomb").addEventListener("click", hátra);
+
+    //mentett állapot olvasása
+    if (localStorage.getItem("hotList")) {
+        hotList = JSON.parse(localStorage.getItem("hotList"));
+    }
+    if (localStorage.getItem("displayedQuestion")) {
+        displayedQuestion = parseInt(localStorage.getItem("displayedQuestion"));
+    }
+    if (localStorage.getItem("nextQuestion")) {
+        nextQuestion = parseInt(localStorage.getItem("nextQuestion"));
+    }
+
+    //kezdő kérdéslista letöltése
+
+    if (hotList.length === 0) {
+        for (let i = 0; i < questionsInHotList; i++) {
+            kérdésBetöltés(nextQuestion, i);
+            nextQuestion++;
+        }
+    } else {
+        kérdésMegjelenítés();
+    }
+    
 });
 
 function kérdésBetöltés(questionNumber, destination) {
@@ -94,6 +115,11 @@ function választás(n) {
     let kérdés = hotList[displayedQuestion].question;
     if (n === kérdés.correctAnswer) {
         document.getElementById("válasz" + n).classList.add("jó")
+        hotList[displayedQuestion].goodAnswers++;
+        if (hotList[displayedQuestion].goodAnswers === 3) {
+            kérdésBetöltés(nextQuestion, displayedQuestion);
+            nextQuestion++;
+        }
     }
     else {
         document.getElementById("válasz" + n).classList.add("rossz")
@@ -103,6 +129,10 @@ function választás(n) {
 
     document.getElementById("válaszok").style.pointerEvents = "none";
     timerHandler = setTimeout(előre, 3000);
+
+    localStorage.setItem("hotList", JSON.stringify(hotList));
+    localStorage.setItem("displayedQuestion", displayedQuestion);
+    localStorage.setItem("nextQuestion", nextQuestion);
 }
 
 
