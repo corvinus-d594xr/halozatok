@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //kezdő kérdéslista letöltése
 
-    if (hotList.length === 0) {
+    if (!localStorage.getItem("hotList")) {
         for (let i = 0; i < questionsInHotList; i++) {
             kérdésBetöltés(nextQuestion, i);
             nextQuestion++;
